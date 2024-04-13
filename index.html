@@ -12,7 +12,11 @@
     <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
 
     <pre id="content" style="white-space: pre-wrap;"></pre>
-
+    <div>
+      <h1>Formulario para pedidos</h1>
+      <form></form>
+    </div>
+  
     <script type="text/javascript">
       /* exported gapiLoaded */
       /* exported gisLoaded */
@@ -139,9 +143,24 @@
         }
         // Flatten to string to display
         const output = range.values.reduce(
-            (str, row) => `${str}${row[0]}, ${row[4]}\n`,
-            'Name, Major:\n');
-        document.getElementById('content').innerText = output;
+            (str, row, index) => {
+              let rowHTML = index === 0 ? '<table><thead><tr>' : '<tr>';
+  
+            // Agregar las celdas a la fila
+            rowHTML += row.reduce((rowAcc, cell) => {
+              // Si es la primera fila, usar th, de lo contrario, td
+              return rowAcc + (index === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`);
+            }, '');
+
+            // Cerrar la fila y, si es la primera, también cerrar the thead
+            rowHTML += index === 0 ? '</tr></thead><tbody>' : '</tr>';
+
+            // Agregar la fila al HTML acumulado
+            return str + rowHTML;
+            } ,'');
+
+
+        document.getElementById('content').innerHTML = output;
       }
     </script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
